@@ -9,25 +9,29 @@
 
 
 corr <- function(directory, threshold = 0) {
-      y <- list.files(paste(getwd(),"/", directory, sep = ""))
+      #y <- list.files(paste(getwd(),"/", "specdata", sep = ""), full.names=TRUE)
+     #lapply(y, read.csv2)
+      #sum(complete.cases(as.data.frame(CHKdata[1])))
+      #lapply(CHKdata, function(x)sum(complete.cases(as.data.frame(x)))>150)
+      #subset(CHKdata, unlist(CHKlist))
+      MyData1 <- NULL
+      MyData2 <- NULL
+      MyData1 <- lapply(list.files(paste(getwd(),"/", directory, sep = ""), full.names=TRUE), read.csv)
+      MyData2 <- sapply(MyData1, function(x) sum(complete.cases(x))>threshold)
       
-      for (i in 1:length(y)) {
-            ## y <- append(y, read.csv(paste(directory, "/", formatC(i, width=3, flag="0"), ".csv", sep = ""))[[pollutant]])
-            x <- read.csv(paste(directory, "/", y[i], sep = ""))
-
-            if (sum(complete.cases(x)) > threshold) {
-                  
-                  ## good <- complete.cases(x)
-                  z <- data.frame(x[complete.cases(x), 2:3])
-                  print(cor(z)##zNitr <- good["nitrate"]
-                  ## print(cor(zSulf, zNitr))
-                  ##&cor(x[["sulfate"]], x[["nitrate"]]
-                  
-                  } ##else {
-                  c(0)  ##    print(FALSE)
-                  ##}
-                         
+      if(sum(MyData2)==0){
+            return(vector(mode="numeric", length=0))
       }
+            else {
+      MyData2 <- MyData1[MyData2]
+      MyData3 <- NULL
+      for(i in 1:length(MyData2)) {
+           
+            MyData3[i] = cor(data.frame(MyData2[i])[, 2], data.frame(MyData2[i])[, 3], use = 'complete.obs')
+            
+        }
+      return(MyData3)
       
+      }
 }
 
