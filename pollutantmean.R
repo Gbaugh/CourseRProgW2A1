@@ -5,29 +5,17 @@
 pollutantmean <- function(directory, pollutant, id = 1:332) {
       ##'directory' is a character vector of length 1 indicating
       ##'the location of the CSV files
+      ##do.call(rbind, lapply(list.files(paste(getwd(),"/", "specdata", sep = ""), full.names=TRUE), read.csv))
       
-      allfiles <- list.files(paste(getwd(),"/", directory, sep = ""), full.names=TRUE)
+      allfiles <- as.vector(paste(getwd(),"/", directory, "/", sep = "", sapply((sapply(id, formatC, width = 3, format = "d", flag = "0")), paste, ".csv", sep = "")))
+     
       
-      tables <- lapply(allfiles, read.csv)
-      do.call(rbind, complete.cases(tables))
+      tables <- do.call(rbind, lapply(allfiles, read.csv))
+     
       
-      subset(tables, tables[,ID] == id, select = pollutant)
-     ##'pollutant' is a character vector of length 1 indicating
-     ##'the name of the pollutant for which we will calculate the
-     ##'mean; either "sulfate" or "nitrate"
-     ##' 
+      tables <- subset(tables, select = pollutant)
+    
+      
+      mean(tables[ ,1], na.rm = TRUE)
 
-            ## mean(read.csv(paste(getwd(),"/", directory, "/", y[i], sep = "")))
-
-      ##'
-      ##''id' is an integer vector indicating the monitor ID numbers
-      ##'to be used
-      
-      
-      ##'
-      ##'Return the mean of the pollutant across all monitors list
-      ##'in the 'id' vector (ignoring NA values)
-      ##'NOTE: Do not round the result!
-      ##'
-   
 }
